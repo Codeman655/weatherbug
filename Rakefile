@@ -1,3 +1,5 @@
+task :default => [:install]
+
 desc "Installs weatherbug to /usr/local/bin"
 task :install  => 'weatherbug.rb' do
   sh "cp weatherbug.rb /usr/local/bin/weatherbug"
