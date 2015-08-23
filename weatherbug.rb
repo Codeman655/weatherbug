@@ -54,9 +54,9 @@ if (ARGV.size < 1) then
 end
 
 if ARGV.include? "-l"
-  FORM="long"
+  form="long"
 elsif ARGV.include? "-s" 
-  FORM="short"
+  form="short"
 end
 
 weatherbug = Net::Telnet::new( "Host" => "rainmaker.wunderground.com" )
