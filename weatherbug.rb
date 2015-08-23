@@ -45,6 +45,18 @@ def merge_response(buffer)
   return output
 end
 
+def parse_weather(line)
+  if line =~ /\.\.\..*[sS]unny/ then
+    return "\u2600"
+  elsif line =~ /\.\.\..*[cC]loudy/ then
+    return "\u2601"
+  elsif line =~ /\.\.\..*[rR]ain/ then
+    return "\u2602"
+  elsif line =~ /\.\.\..*[cC]lear/ then
+    return "\u263d"
+  end
+end
+
 ##################################################
 # Main Function
 ##################################################
@@ -76,8 +88,9 @@ if form == "long" then
 elsif form == "short"  then 
   output = merge_response(response.lines)
   output.each do |line|
-    md = /\.(\w+)/.match(line)
-    puts "#{md[1]}: \u2600".encode
+    md = /\.(.*?)\.\.\./.match(line)
+    char = parse_weather(line)
+    puts "#{md[1]}: #{char}".encode
   end
 end
 #response.each_line do |line|
