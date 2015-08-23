@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'net/telnet'
+require 'pp'
 
 def merge_response(buffer)
   output=[] 
@@ -9,25 +10,39 @@ def merge_response(buffer)
     if i < 8 then 
       next
     end
-    puts i
-    puts "working on line: " + buffer[i]
-    if buffer[i][0] == '.' then
-      puts "set start = " + i.to_s
+    buffer[i].strip!
+    #puts i
+    #puts "line content is:"
+    #pp buffer[i].strip!
+    #puts "checking first period"
+    #puts buffer[i][0]
+    if buffer[i][0] == '.' then #TODO regex here =~ /^\./
+      #puts "set start = " + i.to_s
       start=i;
     end
-    if buffer[i][-2] == '.' then
+    #puts "checking last period"
+    #puts buffer[i][-1]
+    if buffer[i][-1] == '.' then
+      finish += 1
       #Saving in output
-      puts "start: " + start.to_s
-      puts "end: " + finish.to_s
+      #puts "start: " + start.to_s
+      #puts "end: " + finish.to_s
+      #puts "exporting the string:"
+      #puts buffer[start,(finish-start)+1]
       output.push(buffer[start,(finish-start)+1]) #The line is complete
       next
     else #Line continues to next 
-      finish +=1
+      #puts "set finish to: #{i}"
+      finish = i
       next
     end
      #Line is a continuation of the previous line
   end
-  print output
+  pp output
+  output.map! do |arr|
+    arr.join
+  end
+  pp output
   return output
 end
 
