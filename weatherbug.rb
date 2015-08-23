@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 require 'net/telnet'
 require 'pp'
+form="short"
 
 def merge_response(buffer)
   output=[] 
   start=finish=0
-  puts "total buffer lines: " + buffer.size.to_s
+  #puts "total buffer lines: " + buffer.size.to_s
   buffer.size.times do |i|
     if i < 8 then 
       next
@@ -44,9 +45,18 @@ def merge_response(buffer)
   return output
 end
 
-if (ARGV.size != 1) then
+##################################################
+# Main Function
+##################################################
+if (ARGV.size < 1) then
   puts "Usage: weatherbug airport-code"
   exit
+end
+
+if ARGV.include? "-l"
+  FORM="long"
+elsif ARGV.include? "-s" 
+  FORM="short"
 end
 
 weatherbug = Net::Telnet::new( "Host" => "rainmaker.wunderground.com" )
@@ -57,13 +67,17 @@ weatherbug.waitfor(/code--/)
 weatherbug.puts(ARGV.first.to_s)
 #puts response
 response = weatherbug.waitfor(/X to exit:/)
+weatherbug.puts("X")
 #weatherbug.waitfor(/X to exit:/){|c| puts c}
 #puts response
 #print response.lines
-output = merge_response(response.lines)
-output.each do |line|
-  puts line
+if form == "long" then
+  puts response
+elsif form == "short"  then 
+  output = merge_response(response.lines)
+  output.each do |line|
+    md = /\.(\w+)/.match(line)
+    puts "#{md[1]}: \u2600".encode
+  end
 end
-
 #response.each_line do |line|
-weatherbug.puts("X")
