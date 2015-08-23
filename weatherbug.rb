@@ -38,11 +38,9 @@ def merge_response(buffer)
     end
      #Line is a continuation of the previous line
   end
-  pp output
   output.map! do |arr|
     arr.join
   end
-  pp output
   return output
 end
 
@@ -62,6 +60,10 @@ response = weatherbug.waitfor(/X to exit:/)
 #weatherbug.waitfor(/X to exit:/){|c| puts c}
 #puts response
 #print response.lines
-merge_response(response.lines)
+output = merge_response(response.lines)
+output.each do |line|
+  puts line
+end
+
 #response.each_line do |line|
 weatherbug.puts("X")
